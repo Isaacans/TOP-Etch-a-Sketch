@@ -1,0 +1,14 @@
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid-box {
+    flex: 1 0 6%;
+    margin: 0.5px;
+    height: 6.2%;
+    min-height: 30px;
+    width: 6.2%;
+    min-width: 30px;
+    background-color: yellowgreen;
+}
