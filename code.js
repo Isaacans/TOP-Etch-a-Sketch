@@ -2,10 +2,12 @@
 const gridContainer = document.querySelector(".grid-container");
 const btnSize = document.querySelector("button#grid-size");
 const btnPenColor = document.querySelector("button#pen-color");
-let penColor = "black";
+const btnRandomizeCellColors = document.querySelector("button#randomize-cell-colors");
+let gridSize = 16; // Just the default size
+let penColor = "cyan";
 
 // Call default grid
-createGrid(16);
+createGrid(gridSize);
 
 // Add event listeners
 // Set up event listener on gridContainer that listens for mouseover, uses bubbling
@@ -18,6 +20,10 @@ gridContainer.addEventListener("mouseover", (e) => {
 // Set up event listener for button clicks
 btnSize.addEventListener("click", gridChangePrompt);
 btnPenColor.addEventListener("click", changePenColor)
+btnRandomizeCellColors.addEventListener("click", () => {
+    removeGrid();
+    createGrid(gridSize, true);
+});
 
 /* Declare function that creates the grid - flexBasis used to cause cells
  to align by setting flex-basis to a percentage, found by dividing 100 by 
@@ -25,12 +31,15 @@ btnPenColor.addEventListener("click", changePenColor)
  each loop to create unique objects otherwise it's the same object appended 
  on each for loop. Also assign class and use external css to set flexbox and 
  wrap to true, flex grow is 1, flex shrink is 0. */
-function createGrid(heightWidth) {
+function createGrid(heightWidth, randomColor = false) {
     const flexBasis = 100/heightWidth;
     const totalCells = heightWidth * heightWidth;
     for (let i = 0; i < totalCells; i++) {
         const gridCell = document.createElement("div");
         gridCell.setAttribute('class', 'grid-cell');
+        if (randomColor === true) {
+            gridCell.style.backgroundColor = returnRandomColor();
+        };
         gridCell.style.flexBasis = `${flexBasis}%`;
         gridContainer.appendChild(gridCell);
     };
@@ -53,8 +62,10 @@ function gridChangePrompt() {
         alert("Your number is out of range. Please pick a number from 1 to 100.");
         gridChangePrompt();
     } else if (input >= 1 && input <= 100) {
+        // Transfer number to gridSize, so grid can be rebuilt later with this new size, if needed
+        gridSize = input;
         removeGrid();
-        createGrid(input);
+        createGrid(gridSize);
     } else {
         alert("Error, please contact IT support");
     };
@@ -71,4 +82,10 @@ function removeGrid() {
 function changePenColor(color) {
     color = prompt("Type the name of a color. Invalid entries will disable the pen.")
     penColor = color;
+};
+
+function returnRandomColor() {
+    let randomColor = Math.floor(Math.random()*16777215).toString(16);
+    randomColor = "#" + randomColor;
+    return randomColor;
 };
