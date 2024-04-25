@@ -1,21 +1,23 @@
 // Create references/variables
 const gridContainer = document.querySelector(".grid-container");
 const btnSize = document.querySelector("button#grid-size");
-let penColor = "rgb(98, 103, 167)";
+const btnPenColor = document.querySelector("button#pen-color");
+let penColor = "black";
 
 // Call default grid
 createGrid(16);
 
-// Add event listener to div gridContainer that listens for mouseover, uses bubbling
+// Add event listeners
+// Set up event listener on gridContainer that listens for mouseover, uses bubbling
 gridContainer.addEventListener("mouseover", (e) => {
     let target = e.target;
     if (target.className == "grid-cell") {
         highlight(target);
     }
 });
-
 // Set up event listener for button clicks
 btnSize.addEventListener("click", gridChangePrompt);
+btnPenColor.addEventListener("click", changePenColor)
 
 /* Declare function that creates the grid - flexBasis used to cause cells
  to align by setting flex-basis to a percentage, found by dividing 100 by 
@@ -64,4 +66,9 @@ function removeGrid() {
     oldGridCells.forEach((gridCell) => {
         gridCell.remove();
     });
+};
+
+function changePenColor(color) {
+    color = prompt("Type the name of a color. Invalid entries will disable the pen.")
+    penColor = color;
 };
