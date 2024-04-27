@@ -3,8 +3,10 @@ const gridContainer = document.querySelector(".grid-container");
 const btnSize = document.querySelector("button#grid-size");
 const btnPenColor = document.querySelector("button#pen-color");
 const btnRandomizeCellColors = document.querySelector("button#randomize-cell-colors");
+const btnDarkeningPen = document.querySelector("button#darkening-pen");
 let gridSize = 16; // Just the default size
-let penColor = "cyan";
+let penColor = "black";
+let isDarkeningPen = false;
 
 // Call default grid
 createGrid(gridSize);
@@ -12,22 +14,28 @@ createGrid(gridSize);
 // Add event listeners
 // Set up event listener on gridContainer that listens for mouseover, uses bubbling
 gridContainer.addEventListener("mouseover", (e) => {
-    let target = e.target;
-    if (target.className == "grid-cell") {
-        highlight(target);
-    }
+    highlight(e.target);
 });
 // Set up event listener for button clicks
 btnSize.addEventListener("click", gridChangePrompt);
 btnPenColor.addEventListener("click", changePenColor)
-btnRandomizeCellColors.addEventListener("click", () => {
+btnRandomizeCellColors.addEventListener("click", ()=> {
     removeGrid();
     createGrid(gridSize, true);
+});
+btnDarkeningPen.addEventListener("click", ()=> {
+    if (isDarkeningPen === true) {
+        isDarkeningPen = false;
+        btnDarkeningPen.textContent = "Darkening Pen (off)";
+    } else if (isDarkeningPen === false) {
+        isDarkeningPen = true;
+        btnDarkeningPen.textContent = "Darkening Pen (on)";
+    };
 });
 
 /* Declare function that creates the grid - flexBasis used to cause cells
  to align by setting flex-basis to a percentage, found by dividing 100 by 
- number of horizontal cells. Uuse for loop to add divs, element created in 
+ number of horizontal cells. Use for loop to add divs, element created in 
  each loop to create unique objects otherwise it's the same object appended 
  on each for loop. Also assign class and use external css to set flexbox and 
  wrap to true, flex grow is 1, flex shrink is 0. */
@@ -45,9 +53,51 @@ function createGrid(heightWidth, randomColor = false) {
     };
 };
 
-// Declare function to highlight bg-color with element as parameter
+// Declare function to highlight bg-color, handles darkeningPen, takes element as parameter
 function highlight(elem) {
-    elem.style.backgroundColor = penColor;
+    if (isDarkeningPen === true && elem.className === "grid-cell") {
+        const newGridCell = document.createElement("div");
+        newGridCell.setAttribute('class', 'inner-grid-cell');
+        newGridCell.style.opacity = 0.1;
+        elem.appendChild(newGridCell);
+    } else if (isDarkeningPen === true && elem.className === "inner-grid-cell") {
+            switch(elem.style.opacity) {
+            case "0.1":
+                elem.style.opacity = 0.2;
+                break;
+            case "0.2":
+                elem.style.opacity = 0.3;
+                break;
+            case "0.3":
+                elem.style.opacity = 0.4;
+                break;
+            case "0.4":
+                elem.style.opacity = 0.5;
+                break;
+            case "0.5":
+                elem.style.opacity = 0.6;
+                break;
+            case "0.6":
+                elem.style.opacity = 0.7;
+                break;
+            case "0.7":
+                elem.style.opacity = 0.8;
+                break;
+            case "0.8":
+                elem.style.opacity = 0.9;
+                break;
+            case "0.9":
+            case "1":
+                elem.style.opacity = 1;
+                break;
+            default:
+                elem.style.opacity = 1;
+        };
+    } else if (isDarkeningPen === false && elem.className === "inner-grid-cell") {
+        elem.parentNode.style.backgroundColor = penColor;
+    } else {
+        elem.style.backgroundColor = penColor;
+    };    
 };
 
 // Cancel exits prompt, which only accepts numbers and throws an error for the unexpected. 
